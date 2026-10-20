@@ -1,4 +1,4 @@
-# Sierra Intenet Gaming System (SIGS) 3.0.3.0 C++ server
+# Sierra Internet Gaming System (SIGS) 3.0.3.0 C++ server
 
 A Windows C++17 server reconstruction for Sierra Internet Gaming System (SIGS) 3.0.3.0 and its SNWVALID
 3.0.3.1 companion. The default game is Outpost 2 (`OUTPOST2`).
