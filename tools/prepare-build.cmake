@@ -1,0 +1,50 @@
+# A copied CMake cache retains absolute paths; preserve it before configuring here.
+cmake_minimum_required(VERSION 3.20)
+file(REAL_PATH "${CMAKE_CURRENT_LIST_DIR}/.." project_root)
+set(build_dir "${project_root}/build")
+if(NOT EXISTS "${build_dir}/CMakeCache.txt")
+    return()
+endif()
+
+# Do not move a junction or symlink pointing outside this project's build folder.
+file(REAL_PATH "${build_dir}" resolved_build_dir)
+if(NOT resolved_build_dir STREQUAL build_dir OR IS_SYMLINK "${build_dir}")
+    message(FATAL_ERROR "Cannot automatically preserve a linked build directory: ${build_dir}")
+endif()
+
+file(STRINGS "${build_dir}/CMakeCache.txt" cache_paths
+    REGEX "^CMAKE_(HOME_DIRECTORY|CACHEFILE_DIR):INTERNAL=")
+set(cached_source "")
+set(cached_build "")
+foreach(entry IN LISTS cache_paths)
+    if(entry MATCHES "^CMAKE_HOME_DIRECTORY:INTERNAL=(.*)$")
+        set(cached_source "${CMAKE_MATCH_1}")
+    elseif(entry MATCHES "^CMAKE_CACHEFILE_DIR:INTERNAL=(.*)$")
+        set(cached_build "${CMAKE_MATCH_1}")
+    endif()
+endforeach()
+
+foreach(path_variable IN ITEMS cached_source cached_build project_root build_dir)
+    string(REPLACE "\\" "/" ${path_variable} "${${path_variable}}")
+    cmake_path(NORMAL_PATH ${path_variable})
+    if(WIN32)
+        string(TOLOWER "${${path_variable}}" ${path_variable}_comparison)
+    else()
+        set(${path_variable}_comparison "${${path_variable}}")
+    endif()
+endforeach()
+
+if(cached_source_comparison STREQUAL project_root_comparison
+    AND cached_build_comparison STREQUAL build_dir_comparison)
+    return()
+endif()
+
+string(TIMESTAMP backup_time "%Y%m%d-%H%M%S" UTC)
+string(RANDOM LENGTH 8 ALPHABET 0123456789abcdef backup_suffix)
+set(backup_dir "${project_root}/build-backup-${backup_time}-${backup_suffix}")
+if(EXISTS "${backup_dir}")
+    message(FATAL_ERROR "Backup directory already exists: ${backup_dir}. Retry to choose a new name.")
+endif()
+file(RENAME "${build_dir}" "${backup_dir}")
+message(STATUS "Build cache belongs to another location; preserved it at ${backup_dir}")
+message(STATUS "Creating a fresh build for this project location")

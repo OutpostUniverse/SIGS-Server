@@ -1,0 +1,32 @@
+/build/
+/build-backup-*/
+/.vs/
+/out/
+/cmake-build-*/
+
+# Runtime data and local configuration
+/accounts.txt
+/accounts.txt.tmp-*
+/data/
+/moderators.txt
+/news.txt
+/updates.txt
+/packages/
+
+# Research evidence, dependencies and scripts
+/docs/research/
+/third_party/
+research.py
+
+# Logs, crash dumps and local secrets
+*.log
+*.dmp
+.env
+.env.*
+!.env.example
+
+# Python and Windows generated files
+__pycache__/
+*.py[cod]
+Thumbs.db
+Desktop.ini
