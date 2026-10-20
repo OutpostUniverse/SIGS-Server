@@ -3,7 +3,7 @@
 A Windows C++17 server reconstruction for Sierra Internet Gaming System (SIGS) 3.0.3.0 and its SNWVALID
 3.0.3.1 companion. The default game is Outpost 2 (`OUTPOST2`).
 
-**Original-client compatibility is unverified; 45 message entries remain unresolved.**
+**45 message entries remain unresolved.**
 See the [message audit](docs/message-coverage.md) for current coverage.
 
 ## Build and run
